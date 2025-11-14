@@ -1,4 +1,5 @@
 import { IsNotEmpty, IsString, IsEmail } from 'class-validator';
+
 export class CreateAuthDto {
   @IsNotEmpty()
   @IsEmail()
@@ -14,4 +15,14 @@ export class CreateAuthDto {
 
   @IsString()
   readonly displayName?: string;
+}
+
+export class VerifyEmailDto {
+  @IsNotEmpty()
+  @IsEmail()
+  readonly email: string;
+
+  @IsString()
+  @IsNotEmpty()
+  readonly code: string;
 }
