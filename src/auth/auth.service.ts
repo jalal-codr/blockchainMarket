@@ -1,11 +1,27 @@
 import { Injectable } from '@nestjs/common';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { UpdateAuthDto } from './dto/update-auth.dto';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { User } from './schemas/user.schema';
+import { randomUUID } from 'crypto';
 
 @Injectable()
 export class AuthService {
-  create(createAuthDto: CreateAuthDto) {
-    return 'This action adds a new auth';
+  constructor(@InjectModel(User.name) private userModel: Model<User>) {}
+
+  async create(createAuthDto: CreateAuthDto) {
+    try {
+      const newUser = new this.userModel(createAuthDto);
+      newUser.userId = randomUUID();
+      const userData = await newUser.save();
+      return {
+        message: 'New user created',
+        data: userData,
+      };
+    } catch (err: unknown) {
+      return err;
+    }
   }
 
   findAll() {
@@ -17,6 +33,7 @@ export class AuthService {
   }
 
   update(id: number, updateAuthDto: UpdateAuthDto) {
+    console.log(updateAuthDto);
     return `This action updates a #${id} auth`;
   }
 
